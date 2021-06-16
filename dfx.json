@@ -1,21 +1,12 @@
 {
   "canisters": {
-    "decentralized_borrowing_protocol": {
-      "main": "src/decentralized_borrowing_protocol/main.mo",
+    "user": {
+      "main": "src/user/main.mo",
       "type": "motoko"
     },
-    "decentralized_borrowing_protocol_assets": {
-      "dependencies": [
-        "decentralized_borrowing_protocol"
-      ],
-      "frontend": {
-        "entrypoint": "src/decentralized_borrowing_protocol_assets/src/index.html"
-      },
-      "source": [
-        "src/decentralized_borrowing_protocol_assets/assets",
-        "dist/decentralized_borrowing_protocol_assets/"
-      ],
-      "type": "assets"
+    "product": {
+      "main": "src/product/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
