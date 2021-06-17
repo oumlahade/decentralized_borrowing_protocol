@@ -7,6 +7,10 @@
     "product": {
       "main": "src/product/main.mo",
       "type": "motoko"
+    },
+    "treasury": {
+      "main": "src/treasury/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {

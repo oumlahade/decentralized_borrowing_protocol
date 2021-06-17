@@ -1,4 +1,5 @@
 import user "canister:user";
+import treasury "canister:treasury";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Troves "Troves";
@@ -10,28 +11,19 @@ import D "mo:base/Debug";
 
 actor product {
 
-    //initialize stuff
-    private let initial_SDR_supply : Int = 1000000; // in stability pool
-    private let minCollateralRatio : Float = 1.1; //make this information and some of the other information come from a different file
+    //_______________________________________
 
-    private var sdr_supply : Int = 0; //total supply
-    private var icp_supply : Int = 0; //total supply
+    var icp_to_dollar : Float = 1.0; //null values to be rewritten using updateTreasury
+    var sdr_to_dollar : Float = 1.0; //null values to be rewritten using updateTreasury
+    var minCollateralRatio : Float = 1.1; //null values to be rewritten using updateTreasury
 
-    public func get_SDR_Supply () : async Int {
-        return sdr_supply;
+    func updateTreasury() : async (){
+    icp_to_dollar := await treasury.icp_to_dollar(); //these need to be updated periodicaly (price of ICP in Dollars)
+    sdr_to_dollar := await treasury.sdr_to_dollar(); //these need to be updated periodicaly (price of SDR in Dollars)
+    minCollateralRatio := await treasury.getMinCollateralRatio();
     };
 
-    public func get_ICP_Supply () : async Int {
-        return icp_supply;
-    };
-
-    public func init () {
-        sdr_supply := initial_SDR_supply;
-    };
-
-
-    private var icp_to_dollar : Float = 1.0; //these need to be updated periodicaly (price of ICP in Dollars)
-    private var sdr_to_dollar : Float = 1.0; //these need to be updated periodicaly (price of SDR in Dollars)
+    //_______________________________________
 
     //Functionality needed to create Troves
     type Trove = Troves.Trove;
@@ -39,7 +31,6 @@ actor product {
     let map = Map.HashMap<User, Trove>(0,Text.equal, Text.hash);
 
     public func createTrove(id: Text, icp_request: Nat, sdr_request: Nat): async Text{
-        
        let ratio : Float = (Float.fromInt(icp_request)*icp_to_dollar)/(Float.fromInt(sdr_request)*sdr_to_dollar);
        if (ratio < minCollateralRatio){
            return "Failure, please improve your collateral ratio";
@@ -49,4 +40,36 @@ actor product {
            return "Success, Trove for " # id # " created with " #Nat.toText(icp_request)# " ICP deposited and " # Nat.toText(sdr_request) # " SDR withdrawn.";
        }
     };
+
+    public func increaseSDR (id: Text, sdr_request: Nat): async (Text,Bool){
+        //let trove : Troves.Trove = map.get(id);
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false)
+            };
+
+            case (?Trove){
+                let temp = await Trove.increaseSDR(sdr_request);
+                return temp;
+            };
+        };
+        
+    };
+    
+
+    /*public func increaseICP (icp_request: Nat) : async (Text,Bool){
+        
+    };
+
+    public func decreaseSDR (sdr_request: Nat) : async (Text,Bool){
+        
+    };
+
+    public func decreaseICP (icp_request: Nat) : async (Text,Bool){
+        
+    };
+
+    public func closeTrove (sdr_request: Nat) : async (Text, Bool){
+        
+    }; */
 };

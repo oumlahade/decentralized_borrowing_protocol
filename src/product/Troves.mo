@@ -1,4 +1,5 @@
 import Float "mo:base/Float";
+import treasury "canister:treasury";
 import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import D "mo:base/Debug";
@@ -10,15 +11,24 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
     private var icp_held = icp;
     private var sdr_outstanding = sdr;
 
+    //_______________________________________
+
+    var icp_to_dollar : Float = 1.0; //values to be rewritten using updateTreasury
+    var sdr_to_dollar : Float = 1.0; //values to be rewritten using updateTreasury
+
+    func updateTreasury() : async (){
+    icp_to_dollar := await treasury.icp_to_dollar(); //these need to be updated periodicaly (price of ICP in Dollars)
+    sdr_to_dollar := await treasury.sdr_to_dollar(); //these need to be updated periodicaly (price of SDR in Dollars)
+    };
+
+    //_______________________________________
+
     public func icpAmount() : async Nat {
         return icp_held;
     };
     public func sdrAmount() : async Nat {
         return sdr_outstanding;
     };
-
-    private var icp_to_dollar : Float = 1.0; //these need to be updated periodicaly (price of ICP in Dollars)
-    private var sdr_to_dollar : Float = 1.0; //these need to be updated periodicaly (price of SDR in Dollars)
 
     //returns true if successful which should trigger the product canister to issue SDR to the user
     public func increaseSDR (sdr_request: Nat): async (Text,Bool){
