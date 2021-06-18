@@ -31,7 +31,13 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
     };
 
     public func collateralRatio() : async Float {
-        return (Float.fromInt(icp_held)*icp_to_dollar)/(Float.fromInt(sdr_outstanding)*sdr_to_dollar);
+        let ratio = (Float.fromInt(icp_held)*icp_to_dollar)/(Float.fromInt(sdr_outstanding)*sdr_to_dollar);
+        switch (ratio){
+            case NaN {
+                return 0;
+            };
+        };
+        return ratio;
     };
 
     //returns true if successful which should trigger the product canister to issue SDR to the user

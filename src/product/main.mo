@@ -40,7 +40,7 @@ actor product {
        };
     };
 
-    public func increaseSDR (id: Text, sdr_request: Nat): async (Text,Bool){
+    public func increaseSDR (id: Text, sdr_request: Nat): async (Text,Bool){ //add more debt
         switch (map.get(id)){
             case null {
                 return ("Failure - A Trove associated with this ID does not exist",false);
@@ -58,7 +58,7 @@ actor product {
     };
     
 
-    public func increaseICP (id: Text, icp_request: Nat) : async (Text,Bool){
+    public func increaseICP (id: Text, icp_request: Nat) : async (Text,Bool){ //add collateral
         switch (map.get(id)){
             case null {
                 return ("Failure - A Trove associated with this ID does not exist",false);
@@ -120,7 +120,7 @@ actor product {
         };
     };
 
-    public func closeTrove (id: Text, sdr_request: Nat) : async (Text, Int,Bool){
+    public func closeTrove (id: Text, sdr_request: Nat) : async (Text, Nat,Bool){
         switch (map.get(id)){
             case null {
                 return ("Failure - A Trove associated with this ID does not exist", 0, false);
@@ -134,34 +134,48 @@ actor product {
                     let temp3 = await Trove.decreaseICP(temp.1);
                     // eventually we need to figure out actual transfer features
                 };
-                map.remove(id);
+                let ignorE = map.remove(id);
                 return temp;
             };
         };
     };
 
-    public func getTroveICP (id: Text): async Nat{
+    public func getTroveICP (id: Text): async (Text,Nat,Bool){
         switch (map.get(id)){
             case null {
-                return ("Failure - A Trove associated with this ID does not exist",false);
+                return ("Failure - A Trove associated with this ID does not exist",0,false);
             };
 
             case (?Trove){
-                return await Trove.icpAmount();
+                return ("Success",await Trove.icpAmount(),true);
             };
         };
         
     };
-    public func getTroveSDR (id: Text): async Nat{
+    public func getTroveSDR (id: Text): async (Text,Nat,Bool){
         switch (map.get(id)){
             case null {
-                return ("Failure - A Trove associated with this ID does not exist",false);
+                return ("Failure - A Trove associated with this ID does not exist",0,false);
             };
 
             case (?Trove){
-                return await Trove.sdrAmount();
+                return ("Success",await Trove.sdrAmount(),true);
             };
         };
         
-    };  
+    };
+
+    public func getTroveCollateralRatio (id: Text): async (Text,Float,Bool){
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",0,false);
+            };
+
+            case (?Trove){
+                return ("Success",await Trove.collateralRatio(),true);
+            };
+        };
+        
+    };
+      
 };
