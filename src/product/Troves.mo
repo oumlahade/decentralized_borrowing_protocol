@@ -30,6 +30,10 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
         return sdr_outstanding;
     };
 
+    public func collateralRatio() : async Float {
+        return (Float.fromInt(icp_held)*icp_to_dollar)/(Float.fromInt(sdr_outstanding)*sdr_to_dollar);
+    };
+
     //returns true if successful which should trigger the product canister to issue SDR to the user
     public func increaseSDR (sdr_request: Nat): async (Text,Bool){
         let futureSDR : Nat = sdr_outstanding + sdr_request;
@@ -62,12 +66,11 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
         return ("Success",true);
     };
 
-    public func closeTrove (sdr_request: Nat) : async (Text, Bool){
+    public func closeTrove (sdr_request: Nat) : async (Text, Nat,Bool){
         if (sdr_request != sdr_outstanding){
-            return ("Failure - You must return " # Nat.toText(sdr_outstanding) # " to close this Trove", false)
+            return ("Failure - You must return " # Nat.toText(sdr_outstanding) # " to close this Trove", 0,false)
         };
-        sdr_outstanding := 0;
-        icp_held := 0;
-        return ("Success",true);
+        return ("Success",icp_held,true);
+        //we dont need to clear this trove because it will be deleted from the map anyways (idk about this if we implement a heap, then this will need to change)
     };
 }

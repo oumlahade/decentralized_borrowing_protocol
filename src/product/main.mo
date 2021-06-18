@@ -1,4 +1,3 @@
-import user "canister:user";
 import treasury "canister:treasury";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
@@ -38,38 +37,131 @@ actor product {
        else{
            map.put(id, await Troves.Trove(id, icp_request, sdr_request, minCollateralRatio));
            return "Success, Trove for " # id # " created with " #Nat.toText(icp_request)# " ICP deposited and " # Nat.toText(sdr_request) # " SDR withdrawn.";
-       }
+       };
     };
 
     public func increaseSDR (id: Text, sdr_request: Nat): async (Text,Bool){
-        //let trove : Troves.Trove = map.get(id);
         switch (map.get(id)){
             case null {
-                return ("Failure - A Trove associated with this ID does not exist",false)
+                return ("Failure - A Trove associated with this ID does not exist",false);
             };
 
             case (?Trove){
                 let temp = await Trove.increaseSDR(sdr_request);
-                return temp;
+                if (temp.1 == true){
+                    return await treasury.mintSDR(sdr_request);
+                };
+                return temp; //this returns a failure in the Trove
             };
         };
         
     };
     
 
-    /*public func increaseICP (icp_request: Nat) : async (Text,Bool){
-        
+    public func increaseICP (id: Text, icp_request: Nat) : async (Text,Bool){
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false);
+            };
+
+            case (?Trove){
+                let temp = await Trove.increaseICP(icp_request);
+                if (temp.1 == true){
+                    return await treasury.addICP(icp_request);
+                };
+                return temp; //this returns a failure in the Trove
+            };
+        };
     };
 
-    public func decreaseSDR (sdr_request: Nat) : async (Text,Bool){
-        
+    public func decreaseSDR (id: Text, sdr_request: Nat) : async (Text,Bool){
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false);
+            };
+
+            case (?Trove){
+                let temp = await Trove.decreaseSDR(sdr_request);
+                if (temp.1 == true){
+                    let temp2 = await treasury.burnSDR(sdr_request); //burning sdr
+                    if (temp2.1 == true){
+                        return temp2;
+                    }
+                    else{ //theoretically this should never trigger because they cannot return more than they borrowed, and the pool should always have at least what they owe
+                        let ign = await Trove.increaseSDR(sdr_request); //overturn previous removal, ignore the value since it will have to execute since it's reverting to previous state which was shown to have worked
+                        return temp2; //return error message
+                    };
+                };
+                return temp; //this returns a failure
+            };
+        };
     };
 
-    public func decreaseICP (icp_request: Nat) : async (Text,Bool){
-        
+    public func decreaseICP (id: Text, icp_request: Nat) : async (Text,Bool){
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false);
+            };
+
+            case (?Trove){
+                let temp = await Trove.decreaseICP(icp_request);
+                if (temp.1 == true){
+                    let temp2 = await treasury.removeICP(icp_request); //burning sdr
+                    if (temp2.1 == true){
+                        return temp2;
+                    }
+                    else{ //theoretically this should never trigger because their ICP balance can never be greater than the total ICP balance (and if they request more than their balance the Trove triggers the error, not this)
+                        let ign = await Trove.increaseICP(icp_request); //overturn previous removal
+                        return temp2; //return error message
+                    };
+                };
+                return temp; //this returns a failure
+            };
+        };
     };
 
-    public func closeTrove (sdr_request: Nat) : async (Text, Bool){
+    public func closeTrove (id: Text, sdr_request: Nat) : async (Text, Int,Bool){
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist", 0, false);
+            };
+
+            case (?Trove){
+                let temp = await Trove.closeTrove(sdr_request);
+                if (temp.2 == true){
+                    //neither of these should fail, otherwise we have a large problem and need to redo stuff
+                    let temp2 = await treasury.burnSDR(sdr_request); //burning sdr
+                    let temp3 = await Trove.decreaseICP(temp.1);
+                    // eventually we need to figure out actual transfer features
+                };
+                map.remove(id);
+                return temp;
+            };
+        };
+    };
+
+    public func getTroveICP (id: Text): async Nat{
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false);
+            };
+
+            case (?Trove){
+                return await Trove.icpAmount();
+            };
+        };
         
-    }; */
+    };
+    public func getTroveSDR (id: Text): async Nat{
+        switch (map.get(id)){
+            case null {
+                return ("Failure - A Trove associated with this ID does not exist",false);
+            };
+
+            case (?Trove){
+                return await Trove.sdrAmount();
+            };
+        };
+        
+    };  
 };
