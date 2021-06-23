@@ -12,11 +12,11 @@ actor treasury {
     private var sdr_supply : Int = 0; //total supply
     private var icp_supply : Int = 0; //total supply
 
-    public func get_SDR_Supply () : async Int {
+    public query func get_SDR_Supply () : async Int {
         return sdr_supply;
     };
 
-    public func get_ICP_Supply () : async Int {
+    public query func get_ICP_Supply () : async Int {
         return icp_supply;
     };
 
@@ -24,15 +24,15 @@ actor treasury {
         sdr_supply := initial_SDR_supply;
     };
 
-    public func icp_to_dollar () : async Float {
+    public query func icp_to_dollar () : async Float {
         return 1.0;
     };
 
-    public func sdr_to_dollar () : async Float {
+    public query func sdr_to_dollar () : async Float {
         return 1.0;
     };
 
-    public func getMinCollateralRatio () : async Float {
+    public query func getMinCollateralRatio () : async Float {
         return minCollateralRatio;
     };
 

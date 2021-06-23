@@ -147,7 +147,7 @@ actor product {
             };
 
             case (?Trove){
-                return ("Success",await Trove.icpAmount(),true);
+                return ("Success", await Trove.icpAmount(),true);
             };
         };
         
