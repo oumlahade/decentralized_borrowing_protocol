@@ -13,9 +13,16 @@ actor user{
         id := name;
         icp := 10000 //starting icp given to play with Trove
     };
+    public func test_run (name : Text) : async Text {
+        return name # " has opened a new account!";
+    };
 
     public func get_Free_ICP () : async Text {
         return Nat.toText(icp);
+    };
+
+    public func get_user_ID () : async Text {
+        return id;
     };
 
     public func create_Trove () : async Text { //for now let's just create initially empty troves for the sake of a nicer UI

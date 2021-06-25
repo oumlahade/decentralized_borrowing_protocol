@@ -1,5 +1,5 @@
 {
-  "name": "decentralized_borrowing_protocol_assets",
+  "name": "user_assets",
   "version": "0.1.0",
   "description": "",
   "keywords": [],
@@ -18,5 +18,11 @@
     "util": "0.12.3",
     "webpack": "5.24.4",
     "webpack-cli": "4.5.0"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.4"
   }
 }
