@@ -24,6 +24,10 @@
     "treasury": {
       "main": "src/treasury/main.mo",
       "type": "motoko"
+    },
+    "price_oracle": {
+      "main": "src/price_oracle/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
