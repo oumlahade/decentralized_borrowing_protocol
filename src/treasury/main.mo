@@ -24,14 +24,6 @@ actor treasury {
         sdr_supply := initial_SDR_supply;
     };
 
-    public query func icp_to_dollar () : async Float {
-        return 1.0;
-    };
-
-    public query func sdr_to_dollar () : async Float {
-        return 1.0;
-    };
-
     public query func getMinCollateralRatio () : async Float {
         return minCollateralRatio;
     };
