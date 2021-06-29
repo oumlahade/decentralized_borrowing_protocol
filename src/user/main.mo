@@ -3,6 +3,7 @@ import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
 import D "mo:base/Debug";
+import stability_pool "canister:stability_pool";
 
 actor user{
     var id : Text = "placeholder";
@@ -93,6 +94,28 @@ actor user{
         };
         return temp.0;
     };
+
+    public func create_Stability_Account(id : Text) : async (Text,Bool) {
+        let temp = await stability_pool.create_Stability_Account(id);
+        return temp;
+    };
+
+    public func deposit_to_stability_pool (sdr_request : Nat) : async Text {
+        if (sdr_request > sdr){
+            return "Failure - The deposit amount is larger than your SDR balance"
+        };
+
+        let temp =  await stability_pool.deposit_SDR(id, sdr_request);
+        return temp.0;
+        
+    };
+
+    public func collect_ICP_from_Stability_Account (id: Text) : async Text {
+        let temp =  await stability_pool.collect_ICP(id);
+        icp += temp;
+        return "Success - " #Nat.toText(temp)# " ICP collected from stability pool."
+        
+    }
  
 
 };

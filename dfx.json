@@ -28,6 +28,10 @@
     "price_oracle": {
       "main": "src/price_oracle/main.mo",
       "type": "motoko"
+    },
+    "stability_pool": {
+      "main": "src/stability_pool/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {

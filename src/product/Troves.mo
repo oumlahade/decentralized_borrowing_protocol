@@ -74,4 +74,8 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
         return ("Success",icp_held,true);
         //we dont need to clear this trove because it will be deleted from the map anyways (idk about this if we implement a heap, then this will need to change)
     };
+
+    public query func getName() : async Text {
+        return userName;
+    };
 }
