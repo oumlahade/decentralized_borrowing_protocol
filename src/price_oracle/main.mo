@@ -7,6 +7,6 @@ actor price_oracle{
     };
 
     public func update_icp_to_sdr (new_val : Float) : async () {
-        icp_to_sdr := icp_to_sdr;
+        icp_to_sdr := new_val;
     };
 }

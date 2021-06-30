@@ -1,11 +1,14 @@
 import treasury "canister:treasury";
 import price_oracle "canister:price_oracle";
+import stability_pool "canister:stability_pool";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Troves "Troves";
 import Map "mo:base/HashMap";
 import Nat "mo:base/Nat";
 import D "mo:base/Debug";
+import Array "mo:base/Array";
+
 
 //this will add troves to map and have functions for adding collateral, getting more sdr, paying back sdr, withdrawing collateral that call similar trove functions and alter overall parameters
 
@@ -185,6 +188,41 @@ actor product {
             };
         };
         
+    };
+
+    public func checkLiquidation() : async Text {
+        var total_SDR : Nat = 0;
+        var total_ICP : Nat = 0;
+
+        var closedTrovesList : Text = "Troves for";
+        let copyClosedTrovesList = "Troves for";
+
+        for (x in map.entries()){
+            let tempTrove = x.1;
+            let tempcollatRatio = await tempTrove.collateralRatio(); 
+            if ( tempcollatRatio < minCollateralRatio){
+                let sdrRequired = await tempTrove.sdrAmount();
+                if (sdrRequired > 0 ){
+                    let icp_heldTemp = await tempTrove.closeTrove(sdrRequired);
+                    let icp_held = icp_heldTemp.1;
+                    let ignorE = map.remove(x.0);
+                    closedTrovesList := closedTrovesList # " " # x.0 # ",";
+                    total_SDR += sdrRequired;
+                    total_ICP += icp_held;
+                };
+            };
+        };
+        D.print("Total SDR: " #Nat.toText(total_SDR));
+        D.print("Total ICP: " #Nat.toText(total_ICP));
+
+        let tempResponse = await stability_pool.closedTrove(total_SDR,total_ICP);
+
+        if (Text.equal(closedTrovesList, copyClosedTrovesList)){
+            return "No Troves were Liquidated."
+        };
+
+        return closedTrovesList # " were closed.";
+
     };
       
 };

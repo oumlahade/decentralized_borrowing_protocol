@@ -5,21 +5,26 @@ import Nat "mo:base/Nat";
 import D "mo:base/Debug";
 import stability_pool "canister:stability_pool";
 
-actor user{
+actor user2{
     var id : Text = "placeholder";
     var icp : Nat = 0; //this is in wallet not trove
     var sdr : Nat = 0; 
 
-    public func create_Account (name: Text) : async () { //will eventually include other information like wallet
+    public func create_Account_User2 (name: Text) : async () { //will eventually include other information like wallet
         id := name;
         icp := 10000 //starting icp given to play with Trove
     };
+
     public func test_run (name : Text) : async Text {
         return name # " has opened a new account!";
     };
 
     public func get_Free_ICP () : async Text {
         return Nat.toText(icp);
+    };
+
+    public func get_Free_SDR () : async Text {
+        return Nat.toText(sdr);
     };
 
     public func get_user_ID () : async Text {
@@ -95,7 +100,7 @@ actor user{
         return temp.0;
     };
 
-    public func create_Stability_Account(id : Text) : async (Text,Bool) {
+    public func create_Stability_Account() : async (Text,Bool) {
         let temp = await stability_pool.create_Stability_Account(id);
         return temp;
     };
@@ -106,11 +111,12 @@ actor user{
         };
 
         let temp =  await stability_pool.deposit_SDR(id, sdr_request);
+        sdr-=sdr_request;
         return temp.0;
         
     };
 
-    public func collect_ICP_from_Stability_Account (id: Text) : async Text {
+    public func collect_ICP_from_Stability_Account () : async Text {
         let temp =  await stability_pool.collect_ICP(id);
         icp += temp;
         return "Success - " #Nat.toText(temp)# " ICP collected from stability pool."

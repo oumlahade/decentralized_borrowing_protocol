@@ -1,21 +1,12 @@
 {
   "canisters": {
-    "user": {
-      "main": "src/user/main.mo",
+    "user1": {
+      "main": "src/user1/main.mo",
       "type": "motoko"
     },
-    "user_assets":{
-      "dependencies": [
-        "user"
-      ],
-      "frontend": {
-        "entrypoint": "src/user_assets/src/index.html"
-      },
-      "source": [
-        "src/user_assets/assets",
-        "dist/user_assets/"
-      ],
-      "type": "assets"
+    "user2": {
+      "main": "src/user2/main.mo",
+      "type": "motoko"
     },
     "product": {
       "main": "src/product/main.mo",

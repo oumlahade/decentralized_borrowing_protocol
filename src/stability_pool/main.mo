@@ -12,6 +12,7 @@ actor stability_pool{
         var sdr_amount : Int = 0;
         var deposited_sdr_amount : Int = 0;
         var reserve_sdr_amount : Int = 0;
+        var sdr_burn_request : Int = 0;
 
         type Account = Accounts.Account;
         type User = Text;
@@ -71,6 +72,18 @@ actor stability_pool{
         };
     };
 
+    public func get_ICP (id: Text) : async Int { //user and self call; from account, not overall
+        switch (map.get(id)){
+            case null {
+                return -1; //failure
+            };
+
+            case (?Account){
+                return await Account.get_ICP();
+            };
+        };
+    };
+
     public func collect_ICP (id: Text) : async Nat { //user call
         switch (map.get(id)){
             case null {
@@ -88,21 +101,59 @@ actor stability_pool{
     };
 
     public func closedTrove (sdr_requests: Nat, icp_request: Nat) : async Text { //disburse and burn
-        var sdr_request : Int = sdr_requests;
+        sdr_burn_request += sdr_requests;
         icp_amount += icp_request;
-        if (sdr_request > deposited_sdr_amount){
-            let temp: (Text,Bool) = await burn_reserve(sdr_request-deposited_sdr_amount);
+        if (sdr_burn_request > deposited_sdr_amount){
+            let temp: (Text,Bool) = await burn_reserve(sdr_burn_request-deposited_sdr_amount);
             if (temp.1 == false){
                 return temp.0;
             };
-            sdr_request -= deposited_sdr_amount;
+            sdr_burn_request -= deposited_sdr_amount;
         };
-
+        var sdr_burned_incrementer : Nat = 0;
+        var icp_given_incrementer : Nat = 0;
         for (x in map.entries()){
             let tempAccount = x.1;
-            let tempSDR = await tempAccount.get_SDR();
-            return Int.toText(tempSDR);
+            let tempSDR : Int = await tempAccount.get_SDR();
+            
+            let amountToBeBurned : Nat = Int.abs((tempSDR*sdr_burn_request)/deposited_sdr_amount);
+            let icpToBeGiven : Nat = Int.abs((tempSDR*icp_amount)/deposited_sdr_amount); //accounts for truncating in previous iterations
+
+
+            await tempAccount.burn_SDR(amountToBeBurned);
+            sdr_burned_incrementer += amountToBeBurned;
+
+            await tempAccount.disburse_ICP(icpToBeGiven);
+            icp_given_incrementer += icpToBeGiven;
+
         };
-        return "hello";
+
+        sdr_amount -= sdr_burned_incrementer;
+        deposited_sdr_amount -= sdr_burned_incrementer;
+        sdr_burn_request -= sdr_burned_incrementer;
+
+        icp_amount -= icp_given_incrementer;
+
+        return "Success";
+    };
+
+    public func icp_remaining () : async Int {
+        return icp_amount;
+    };
+
+    public func sdr_to_burn_remaining () : async Int {
+        return sdr_burn_request;
+    };
+
+    public func totalSDR () : async Int {
+        return sdr_amount;
+    };
+
+    public func get_total_deposited_sdr () : async Int {
+        return deposited_sdr_amount;
+    };
+
+    public func get_reserve_sdr_amount () : async Int {
+        return reserve_sdr_amount; 
     };
 };

@@ -6,7 +6,7 @@ import Text "mo:base/Text";
 
 actor class Account (name: Text) {
     private let id : Text = name;
-    private var sdr_amount : Int = 0;
+    private var sdr_amount : Nat = 0;
     private var icp_held : Nat = 0;
 
     public func add_SDR (sdr_request : Nat): async (){
@@ -19,15 +19,19 @@ actor class Account (name: Text) {
 
     public func collect_ICP () : async Nat {
         let temp = icp_held;
-        icp_held := 0;
+        icp_held -= icp_held;
         return temp;
     };
 
     public func disburse_ICP (icp_request : Nat) : async () {
-        icp_held += icp_request;
+        icp_held += icp_request; 
     };
 
     public query func get_SDR () : async Int {
         return sdr_amount;
+    };
+
+    public query func get_ICP () : async Int {
+        return icp_held;
     }
 }

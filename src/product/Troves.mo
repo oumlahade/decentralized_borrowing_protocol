@@ -16,7 +16,7 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
 
     var icp_to_sdr : Float = 1.0; //null values to be rewritten using price_oracle
 
-    func updateTreasury_and_Price() : async (){
+    public func updateTreasury_and_Price() : async (){
     icp_to_sdr := await price_oracle.get_icp_to_sdr(); //these need to be updated periodicaly
     minCollateralRatio := await treasury.getMinCollateralRatio();
     };
@@ -30,13 +30,15 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
         return sdr_outstanding;
     };
 
-    public query func collateralRatio() : async Float {
+    public func collateralRatio() : async Float {
+        await updateTreasury_and_Price();
         let ratio = (Float.fromInt(icp_held)*icp_to_sdr)/(Float.fromInt(sdr_outstanding));
         return ratio;
     };
 
     //returns true if successful which should trigger the product canister to issue SDR to the user
     public func increaseSDR (sdr_request: Nat): async (Text,Bool){
+        //await updateTreasury_and_Price();
         let futureSDR : Nat = sdr_outstanding + sdr_request;
         if ((Float.fromInt(icp_held)*icp_to_sdr)/(Float.fromInt(futureSDR)) < minCollateralRatio){
             return ("Failure - Deposit more ICP or Withdraw less SDR.",false);
@@ -59,6 +61,7 @@ actor class Trove (name: Text, icp: Nat, sdr: Nat, minCollatRatio: Float) {
     };
 
     public func decreaseICP (icp_request: Nat) : async (Text,Bool){
+        //await updateTreasury_and_Price();
         let futureICP : Nat = icp_held - icp_request;
         if ((Float.fromInt(futureICP)*icp_to_sdr)/(Float.fromInt(sdr_outstanding)) < minCollateralRatio){
             return ("Failure - Withdraw less ICP or Deposit more ICP.",false);
