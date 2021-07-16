@@ -10,11 +10,6 @@
     <script src="index.js"></script>
 </head>
 <body>
-    <section>
-        <label for="name"> Create an account: &nbsp;</label>
-        <input id="name" alt="Name" typ="text" />
-        <button id="clickMeBtn">Create Account</button>
-    </section>
     <section id="ID_name"></section>
     <div id="container">
         <div id="header">
@@ -37,7 +32,7 @@
                     <div class="button-container" id="accntBtn">
                         <button class="btn" id="test">Submit</button>
                     </div>
-                    <div class="result" style="display:flex;" id="accntResult">Placeholder</div>
+                    <div class="result" style="display:flex;" id="accntResult"></div>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -71,9 +66,7 @@
                     </div>
                     <div class="result" style="display:flex;">
                         <span class="result-buttons">
-                            <button class="btn text-btn active">Text</button>
-                            <button class="btn ui-btn">UI</button>
-                            <button class="btn json-btn">JSON</button>
+
                         </span>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
@@ -96,9 +89,6 @@
                     </div>
                     <div class="result" style="display:flex;">
                         <span class="result-buttons">
-                            <button class="btn text-btn active">Text</button>
-                            <button class="btn ui-btn">UI</button>
-                            <button class="btn json-btn">JSON</button>
                         </span>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
@@ -121,9 +111,7 @@
                     </div>
                     <div class="result" style="display:flex;">
                         <span class="result-buttons">
-                            <button class="btn text-btn active">Text</button>
-                            <button class="btn ui-btn">UI</button>
-                            <button class="btn json-btn">JSON</button>
+
                         </span>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
@@ -146,15 +134,25 @@
                     </div>
                     <div class="result" style="display:flex;">
                         <span class="result-buttons">
-                            <button class="btn text-btn active">Text</button>
-                            <button class="btn ui-btn">UI</button>
-                            <button class="btn json-btn">JSON</button>
+
                         </span>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
                         <div class="json-result" style="display: none;">undefined</div>
                     </div>
+                    <li id="Close Trove">
+                        <div class="signature">
+                            <b>Close Trove</b>
+                        </div>
+                        <div class="input-container"></div>
+                        <div class="button-container">
+                            <button class="result" id="CloseTroveBtn">Close Trove</button>
+                        </div>
+                        <div class="result" style="display:flex;" id="CloseTroveResult"></div>
+                        <div class="left">
+                        </div>
+                    </li>
                 </li>
             </ul>
         </div>

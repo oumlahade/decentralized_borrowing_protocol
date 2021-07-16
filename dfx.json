@@ -23,6 +23,19 @@
     "stability_pool": {
       "main": "src/stability_pool/main.mo",
       "type": "motoko"
+    },
+    "user_assets": {
+      "dependencies": [
+        "user1"
+      ],
+      "frontend": {
+        "entrypoint": "src/user_assets/src/index.html"
+      },
+      "source": [
+        "src/user_assets/assets",
+        "dist/user_assets/"
+      ],
+      "type": "assets"
     }
   },
   "defaults": {
