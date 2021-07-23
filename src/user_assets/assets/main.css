@@ -1,6 +1,7 @@
 body {
     font-family: sans-serif;
     font-size: 1.5rem;
+    background-color:rgba(0, 128, 0, 0.1);
 }
 
 img {
@@ -32,3 +33,18 @@ section {
 #ID_name:empty {
     display: none;
 }
+
+#methods {
+    list-style: none;
+}
+
+.signature{
+    font-size: 15px;
+    padding:10px;
+}
+
+.container{
+    margin:100px;
+    background-color:rgba(0, 128, 0, 0.1);
+}
+
