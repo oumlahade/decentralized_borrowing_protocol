@@ -34,9 +34,10 @@
                         </span>
                     </div>
                     <div class="button-container" id="accntBtn">
-                        <button class="results" id="test">Submit</button>
+                        <button class="results" id="test" onclick="accountFunction()">Submit</button>
                     </div>
                     <div class="result" style="display:flex;" id="accntResult"></div>
+                    <p id="demo"></p>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -46,10 +47,10 @@
                 <li id="View ICP Balance">
                     <div class="signature">
                         <b>View Current ICP Balance:</b>
-                        <div class="button-container" id="ICPButton">
+                        <div class="button-container" id="ICPButton" onclick="ICPFunction()">
                             <button class="results" id="test">View</button>
                         </div>
-                        <section id="balance"></section>
+                        <div class="result" style="display:flex;" id="balance"></div>
                     </div>
                 </li>
                 <li id="Create Trove">
@@ -58,7 +59,7 @@
                     </div>
                     <div class="input-container"></div>
                     <div class="button-container">
-                        <button class="result" id="TroveBtn">Open Trove</button>
+                        <button class="result" id="TroveBtn" onclick = "TroveFunc()">Open Trove</button>
                     </div>
                     <div class="result" style="display:flex;" id="Trove-Result"></div>
                     <div class="left">
@@ -75,12 +76,9 @@
                         </span>
                     </div>
                     <div class="button-container">
-                        <button class="results">Deposit</button>
+                        <button class="results" onclick="DepositICPFunc()">Deposit</button>
                     </div>
-                    <div class="result" style="display:flex;">
-                        <span class="result-buttons">
-
-                        </span>
+                    <div class="result" style="display:flex;" id="ICP-Deposit-result"></div>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -98,11 +96,9 @@
                         </span>
                     </div>
                     <div class="button-container">
-                        <button class="results">Deposit</button>
+                        <button class="results" onclick="DepositSDRFunc()">Deposit</button>
                     </div>
-                    <div class="result" style="display:flex;">
-                        <span class="result-buttons">
-                        </span>
+                    <div class="result" style="display:flex;" id="DepsitSDRResults"></div>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -120,12 +116,9 @@
                         </span>
                     </div>
                     <div class="button-container">
-                        <button class="results">Withdraw</button>
+                        <button class="results" onclick="WithdrawICPFunc()">Withdraw</button>
                     </div>
-                    <div class="result" style="display:flex;">
-                        <span class="result-buttons">
-
-                        </span>
+                    <div class="result" style="display:flex;" id="WithdrawICPResults"></div>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -143,12 +136,9 @@
                         </span>
                     </div>
                     <div class="button-container">
-                        <button class="results">Withdraw</button>
+                        <button class="results" onclick="WithDrawSDRFunc()">Withdraw</button>
                     </div>
-                    <div class="result" style="display:flex;">
-                        <span class="result-buttons">
-
-                        </span>
+                    <div class="result" style="display:flex;" id="WithdrawSDRResults"></div>
                     <div class="left">
                         <div class="text-result" style="display: flex;"></div>
                         <div class="ui-result" style="display:none;"></div>
@@ -160,7 +150,7 @@
                         </div>
                         <div class="input-container"></div>
                         <div class="button-container">
-                            <button class="result" id="CloseTroveBtn">Close Trove</button>
+                            <button class="result" id="CloseTroveBtn" onclick="CloseTroveFunc()">Close Trove</button>
                         </div>
                         <div class="result" style="display:flex;" id="CloseTroveResult"></div>
                         <div class="left">
@@ -173,5 +163,31 @@
             <p id="trove-test"></p>
         </div>
     </div>
+    <script>
+        function accountFunction() {
+            document.getElementById("demo").innerHTML = "Hello, Rhys. Your account has been opened.";
+        }
+        function ICPFunction() {
+            document.getElementById("balance").innerHTML = "10,000 ICP"
+        }
+        function TroveFunc(){
+            document.getElementById("Trove-Result").innerHTML = "Rhys's Trove has been opened and contains 10,000 ICP."
+        }
+        function DepositICPFunc(){
+            document.getElementById("ICP-Deposit-result").innerHTML = "Deposited 1000 ICP"
+        }
+        function WithDrawSDRFunc(){
+            document.getElementById("WithdrawSDRResults").innerHTML = "Withdrew 5000 SDR out of 9090 possible SDR."
+        }
+        function WithdrawICPFunc() {
+            document.getElementById("WithdrawICPResults").innerHTML = "Cannot Withdraw ICP with outstanding SDR"
+        }
+        function DepositSDRFunc(){
+            document.getElementById("DepsitSDRResults").innerHTML = "Deposited 100 out of 5000 SDR. New total: 4900 SDR."
+        }
+        function CloseTroveFunc(){
+            document.getElementById("CloseTroveResult").innerHTML = "Cannot close Trove with outstanding SDR."
+        }
+    </script>
 </body>
 </html>

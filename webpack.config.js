@@ -27,6 +27,7 @@ const aliases = Object.entries(dfxJson.canisters).reduce(
   {}
 );
 
+
 /**
  * Generate a webpack configuration for a canister.
  */
